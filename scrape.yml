@@ -3,7 +3,7 @@ name: Scrape Cars and Update Site
 # מתי הקוד ירוץ?
 on:
   schedule:
-    - cron: '0 */6 * * *' # הפעלה אוטומטית כל 6 שעות
+    - cron: '0 */6 * * *' # Every 6 hours
   workflow_dispatch: # כפתור שיאפשר לך להפעיל את הסריקה ידנית מתי שתרצה
 
 # What permissions the workflow needs to run
