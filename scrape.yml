@@ -6,7 +6,7 @@ on:
     - cron: '0 */6 * * *' # הפעלה אוטומטית כל 6 שעות
   workflow_dispatch: # כפתור שיאפשר לך להפעיל את הסריקה ידנית מתי שתרצה
 
-# הרשאות כדי שהשרת יוכל לשמור את הקובץ החדש באתר
+# What permissions the workflow needs to run
 permissions:
   contents: write
 
