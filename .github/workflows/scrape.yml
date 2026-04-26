@@ -1,0 +1,42 @@
+name: Scrape Cars and Update Site
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scrape-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          playwright install chromium
+
+      - name: Run scraper
+        run: python scrapper.py
+
+      - name: Commit and push generated HTML
+        run: |
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes detected"
+            exit 0
+          fi
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git commit -m "Update generated car listings"
+          git push

@@ -1,3 +1,4 @@
+import logging
 import time
 from datetime import datetime
 from playwright.sync_api import sync_playwright
@@ -8,6 +9,12 @@ URLS = {
     "Facebook": "https://www.facebook.com/marketplace/category/vehicles?minYear=2010&maxYear=2014&maxMileage=160000&query=Seat%20Ibiza&exact=false"
 }
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
+LOGGER = logging.getLogger(__name__)
+
 def scrape_cars():
     cars_found = []
     
@@ -17,11 +24,11 @@ def scrape_cars():
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
-        print("מתחיל סריקה...")
+        LOGGER.info("מתחיל סריקה...")
 
         # --- סריקת יד 2 (דוגמה למבנה, דורש התאמת סלקטורים בהמשך) ---
         try:
-            print("סורק את יד 2...")
+            LOGGER.info("סורק את יד 2...")
             page.goto(URLS["Yad2"], timeout=60000)
             time.sleep(5) # ממתינים לטעינת הדף
             
@@ -35,11 +42,11 @@ def scrape_cars():
                 "source": "יד 2"
             })
         except Exception as e:
-            print(f"שגיאה בסריקת יד 2: {e}")
+            LOGGER.exception("שגיאה בסריקת יד 2: %s", e)
 
         # --- סריקת פייסבוק ---
         try:
-            print("סורק את פייסבוק מרקטפלייס...")
+            LOGGER.info("סורק את פייסבוק מרקטפלייס...")
             page.goto(URLS["Facebook"], timeout=60000)
             time.sleep(5)
             
@@ -52,7 +59,7 @@ def scrape_cars():
                 "source": "Facebook"
             })
         except Exception as e:
-            print(f"שגיאה בסריקת פייסבוק: {e}")
+            LOGGER.exception("שגיאה בסריקת פייסבוק: %s", e)
 
         browser.close()
     
@@ -112,7 +119,7 @@ def generate_html(cars):
     # שמירת הקובץ
     with open("index.html", "w", encoding="utf-8") as file:
         file.write(html_content)
-    print("קובץ index.html נוצר בהצלחה!")
+    LOGGER.info("קובץ index.html נוצר בהצלחה!")
 
 # הפעלת התהליך
 if __name__ == "__main__":
